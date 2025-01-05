@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create/Update Blog Post</title>
+</head>
+<body>
+    <h1>{% if form.instance.id %}Edit{% else %}Create{% endif %} Blog Post</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'post_list' %}">Cancel</a>
+</body>
+</html>
