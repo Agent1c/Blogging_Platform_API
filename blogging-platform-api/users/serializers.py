@@ -21,10 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        fields = ['username', 'email']
 
     def update(self, instance, validated_data):
         instance.username = validated_data.get('username', instance.username)

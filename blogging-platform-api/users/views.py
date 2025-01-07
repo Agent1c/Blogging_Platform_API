@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from .forms import UserRegistrationForm
 from .serializers import UserSerializer
 from rest_framework import generics

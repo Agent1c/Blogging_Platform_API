@@ -7,7 +7,7 @@ from .models import BlogPost, Category, Tag
 class BlogPostAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'category', 'published_date')
     search_fields = ('title', 'content')
-    list_filter = ('category', 'tags')
+    list_filter = ('category',)
 
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Category)

@@ -18,7 +18,7 @@ def create_post(request):
         form = BlogPostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user.username  # Set the author to the logged-in user
+            post.author = request.user  # Set the author to the logged-in user
             post.save()
             return redirect('post_list')
     else:
@@ -120,3 +120,9 @@ def search_posts(request):
         posts = posts.filter(tags__in=tags_list)
 
     return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
+
+def home(request):
+    return render(request, 'home.html')
+
+def about(request):
+    return render(request, 'about.html')

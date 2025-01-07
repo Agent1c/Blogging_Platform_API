@@ -24,7 +24,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
         tags_data = validated_data.pop('tags', [])
         blog_post = BlogPost.objects.create(**validated_data)
         for tag_data in tags_data:
-            tag, created = Tag.objects.get_or_create(**tag_data)
+            tag, _ = Tag.objects.get_or_create(**tag_data)
             blog_post.tags.add(tag)
         return blog_post
 

@@ -1,5 +1,4 @@
 from django.urls import path
-from .views import create_post, post_list, update_post, delete_post, posts_by_category, posts_by_author
 from .views import (
     create_post,
     post_list,
