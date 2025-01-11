@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.x/ref/settings/
 
 import os
 from pathlib import Path
+# from django.contrib.auth.models import User
+# from django.db import models
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -59,7 +61,8 @@ MIDDLEWARE = [
 ]
 
 
-AUTH_USER_MODEL = 'users.User'
+# AUTH_USER_MODEL = 'users.User'
+# AUTH_USER_MODEL = 'users.User'
 
 # user = models.ForeignKey(User, on_delete=models.CASCADE)
 

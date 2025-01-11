@@ -113,11 +113,11 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
-def user_login(request):
-    return render(request, 'registration/login.html')
+# def user_login(request):
+#     return render(request, 'registration/login.html')
 
 def login(request):
-    return render(request, 'registration/login.html')
+    return render(request, 'users/login.html')
 
 @login_required
 def logout(request):
