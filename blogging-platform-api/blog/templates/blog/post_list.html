@@ -1,28 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Blog Posts</title>
-</head>
-<body>
-    <h1>Blog Posts</h1>
-    <form method="get" action="{% url 'search_posts' %}">
-        <input type="text" name="q" placeholder="Search...">
-        <input type="text" name="category" placeholder="Category">
-        <input type="date" name="published_after" placeholder="Published After">
-        <input type="text" name="tags" placeholder="Tags (comma-separated)">
-        <button type="submit">Search</button>
-    </form>
-    <ul>
-        {% for post in posts %}
-            <li>
-                <h2>{{ post.title }}</h2>
-                <p>{{ post.content }}</p>
-                <p><strong>Author:</strong> {{ post.author.username }} | <strong>Category:</strong> {{ post.category }} | <strong>Published:</strong> {{ post.published_date }}</p>
-            </li>
-        {% empty %}
-            <li>No posts available.</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Blog Posts</h1>
+
+<!-- Search Form -->
+<form method="get" action="{% url 'blog:post_list' %}">
+    <input type="text" name="q" placeholder="Search...">
+    <input type="text" name="category" placeholder="Category">
+    <input type="date" name="published_after" placeholder="Published After">
+    <input type="text" name="tags" placeholder="Tags (comma-separated)">
+    <button type="submit">Search</button>
+</form>
+
+<!-- Blog Posts List -->
+{% if filter %}
+    <h2>Filtered by: {{ filter }}</h2>
+{% endif %}
+<ul>
+    {% for post in posts %}
+        <li>
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.content }}</p>
+            <p><strong>Author:</strong> <a href="{% url 'blog:posts_by_author' post.author.username %}">{{ post.author.username }}</a> | <strong>Category:</strong> <a href="{% url 'blog:posts_by_category' post.category.name %}">{{ post.category.name }}</a> | <strong>Published:</strong> {{ post.created_at }}</p>
+        </li>
+    {% empty %}
+        <li>No posts available.</li>
+    {% endfor %}
+</ul>
+
+<!-- Create Post Section -->
+<h2>Create Post</h2>
+<form method="post" action="{% url 'blog:create_post' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create</button>
+</form>
+
+{% endblock %}

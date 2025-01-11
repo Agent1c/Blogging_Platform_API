@@ -35,3 +35,17 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+.post{
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+}
+
+.error {
+    color: red;
+}
+
+::content h1 {
+    font-size: 2rem;
+}

@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Posts in {{ category }}</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
     <h1>Posts in {{ category }}</h1>
     <ul>
         {% for post in posts %}
@@ -18,5 +14,4 @@
         {% endfor %}
     </ul>
     <a href="{% url 'post_list' %}">Back to all posts</a>
-</body>
-</html>
+{% endblock %}

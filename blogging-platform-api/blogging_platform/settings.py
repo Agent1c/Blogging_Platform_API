@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.x/ref/settings/
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,6 +30,10 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    'users',
+    'blog',
+    'rest_framework',
+    'rest_framework_simplejwt',  # Required for JWT authentication
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,10 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',  # Required for Django Allauth
     'django.contrib.sitemaps',# Optional, for sitemap support
-    'rest_framework_simplejwt',  # Required for JWT authentication
-    'rest_framework',
-    'blog',
-    'users',
 ]
 
 
@@ -54,11 +55,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',  # Required for Django Allauth
 ]
 
 
 AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = 'post_list'  # Redirect to the post list page after login
+
+# user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'  # Redirect to the login page after logout
 
 STATIC_URL = '/static/'
