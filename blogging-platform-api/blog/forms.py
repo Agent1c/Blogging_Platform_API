@@ -2,6 +2,7 @@ from django import forms
 from .models import BlogPost
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import Comment
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
@@ -39,4 +40,9 @@ class UserRegistrationForm(UserCreationForm):
         username = self.cleaned_data.get('username')
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("A user with that username already exists.")
-        return username
+        return 
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']

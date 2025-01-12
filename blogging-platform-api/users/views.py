@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_list_or_404, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse
@@ -14,6 +14,7 @@ from django.core.exceptions import ValidationError
 from django.utils.http import url_has_allowed_host_and_scheme 
 import logging
 from blog.forms import UserRegistrationForm
+from blog.models import BlogPost
 
 logger = logging.getLogger(__name__)
 
@@ -67,16 +68,44 @@ def login_user_view(request):
 @login_required  # Ensure only logged-in users can access the profile page
 def profile_view(request):
     try:
+        user_posts_count = BlogPost.objects.filter(author=request.user).count()
+        last_post_date = BlogPost.objects.filter(author=request.user).order_by('-created_at').first()
+        comments_count = Comment.objects.filter(author=request.user).count()
+        
         user_data = {
             'user': request.user,
             'profile': getattr(request.user, 'profile', None),
-            'last_login': request.session.get('last_login', 'First visit')
+            'last_login': request.session.get('last_login', 'First visit'),
+            'user_posts_count': user_posts_count,
+            'last_post_date': last_post_date.created_at if last_post_date else None,
+            'comments_count': comments_count,
         }
         return render(request, 'users/profile.html', user_data)
     except Exception as e:
         logger.error(f"Error in profile view for user {request.user.username}: {str(e)}")
         messages.error(request, 'An error occurred while loading your profile.')
         return redirect('home')
+
+def post_detail_view(request, post_id):
+    post = get_object_or_404(BlogPost, id=post_id)
+    comments = post.comments.all()
+
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.author = request.user
+            comment.post = post
+            comment.save()
+            return redirect('post_detail', post_id=post.id)
+    else:
+        comment_form = CommentForm()
+
+    return render(request, 'blog/post_detail.html', {
+        'post': post,
+        'comments': comments,
+        'comment_form': comment_form,
+    })
 
 @require_http_methods(["POST"])
 def logout_view(request):

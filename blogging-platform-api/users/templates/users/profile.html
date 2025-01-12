@@ -41,7 +41,11 @@
 
                     <div class="mt-4">
                         <h4>Account Activity</h4>
-                        <!-- Add any additional user activity information here -->
+                        <ul class="list-unstyled">
+                            <p><strong>Recent Posts:</strong> {{ user_posts_count }}</p>
+                            <p><strong>Last Post Date:</strong> {{ last_post_date|default:"No posts yet" }}</p>
+                            <p><strong>Comments Made:</strong> {{ comments_count|default:"0" }}</p>
+                            <p><strong>Account Status:</strong> {{ user.is_active|yesno:"Active,Inactive" }}</p>
                     </div>
                 </div>
                 
