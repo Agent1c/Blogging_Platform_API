@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_list_or_404, redirect
+from django.shortcuts import get_object_or_404, render, get_list_or_404, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse
@@ -13,8 +13,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.utils.http import url_has_allowed_host_and_scheme 
 import logging
-from blog.forms import UserRegistrationForm
-from blog.models import BlogPost
+from blog.forms import CommentForm, UserRegistrationForm
+from blog.models import BlogPost, Comment
 
 logger = logging.getLogger(__name__)
 

@@ -26,13 +26,13 @@ class User(AbstractUser):
 
     groups = models.ManyToManyField(
         Group,
-        related_name='group_custom_user_set',  # Change this to something unique
+        related_name='group_custom_user_set',  
         blank=True,
     )
     
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name='custom_user_permissions_set',  # Change this to something unique
+        related_name='custom_user_permissions_set', 
         blank=True,
     )
 
