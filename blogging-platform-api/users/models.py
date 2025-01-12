@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager,  Group, Permission
 
+#CustomerUserManger Model
 class CustomUserManager(BaseUserManager):
     use_in_migrations = True
     def create_user(self, email, password):
@@ -19,6 +20,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+# User Model
 class User(AbstractUser):
     email = models.EmailField(unique=True, max_length=255, null=False)
     username = models.CharField(unique=True, max_length=30)

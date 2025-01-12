@@ -18,6 +18,7 @@ from blog.models import BlogPost, Comment
 
 logger = logging.getLogger(__name__)
 
+# Attemps validation tracker
 def rate_limit(key_prefix, limit=5, period=60):
     def decorator(func):
         def wrapper(request, *args, **kwargs):
@@ -85,6 +86,7 @@ def profile_view(request):
         logger.error(f"Error in profile view for user {request.user.username}: {str(e)}")
         messages.error(request, 'An error occurred while loading your profile.')
         return redirect('home')
+
 
 def post_detail_view(request, post_id):
     post = get_object_or_404(BlogPost, id=post_id)
