@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
-
+from django.views.decorators.cache import cache_page
 from .forms import BlogPostForm, UserProfileForm, UserRegistrationForm
 from .models import BlogPost
 
@@ -28,18 +28,6 @@ class BlogDetailView(View):
 
 
 @login_required(login_url='/users/login/')
-# def create_post(request):
-#     if request.method == 'POST':
-#         form = BlogPostForm(request.POST, user=request.user)
-#         if form.is_valid():
-#             post = form.save(commit=False)
-#             post.author = request.user
-#             post.save()
-#             form.save_m2m()  # Save the many-to-many data for the form
-#             return redirect('post_list')
-#     form = BlogPostForm(user=request.user)
-#     return render(request, 'blog/create_post.html', {'form': form})
-
 def create_post(request):
     if request.method == 'POST':
         form = BlogPostForm(request.POST, user=request.user)  # Pass the user to the form
@@ -156,23 +144,11 @@ def logout(request):
     return redirect('home')
 
 
-def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            auth_login(request, user)
-            return redirect('post_list')
-    form = UserRegistrationForm()
-    return render(request, 'registration/register.html', {'form': form})
-
-
 @login_required
-def user_profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('user_profile')
-    form = UserProfileForm(instance=request.user)
-    return render(request, 'registration/profile.html', {'form': form})
+@cache_page(60 * 15)  # Cache for 15 minutes
+def profile_view(request):
+    user_data = {
+        'user': request.user,
+        'profile': getattr(request.user, 'profile', None)
+    }
+    return render(request, 'users/profile.html', user_data)

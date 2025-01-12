@@ -61,10 +61,10 @@ MIDDLEWARE = [
 ]
 
 
-# AUTH_USER_MODEL = 'users.User'
-# AUTH_USER_MODEL = 'users.User'
-
-# user = models.ForeignKey(User, on_delete=models.CASCADE)
+# settings.py
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
@@ -115,12 +115,14 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/4.x/ref/settings/#auth-password-validators
+
+# settings.py
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 10,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
