@@ -28,7 +28,8 @@ SECRET_KEY = 'django-insecure-v^gh&)!7c6-nu4bs#o^3dbxgw5t+n3qs^1ze_%!a#53el*2j*9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["localhost","127.0.0.1"]
+# ALLOWED_HOSTS = []
+ALLOWED_HOST = ['blogging-site.herokuapp.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -70,13 +71,8 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'  # Redirect to the login page after logout
 
-MEDIA_ROOT = BASE_DIR/ 'media'
-STATIC_ROOT = BASE_DIR / 'assets'
-
-STATICFILES_DIRS = [BASE_DIR/ 'static']
-
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR/ 'static']
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -91,7 +87,7 @@ ROOT_URLCONF = 'blogging_platform.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
