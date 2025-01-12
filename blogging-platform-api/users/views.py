@@ -11,7 +11,9 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_page
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.utils.http import url_has_allowed_host_and_scheme 
 import logging
+from blog.forms import UserRegistrationForm
 
 logger = logging.getLogger(__name__)
 
@@ -31,51 +33,38 @@ def rate_limit(key_prefix, limit=5, period=60):
 @require_http_methods(["GET", "POST"])
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegistrationForm(request.POST)  # Use the custom registration form
         if form.is_valid():
-            try:
-                # Validate password strength
-                validate_password(form.cleaned_data['password1'])
-                user = form.save()
-                logger.info(f"New user registered: {user.username}")
-                login(request, user)
-                messages.success(request, 'Registration successful!')
-                return redirect('profile')
-            except ValidationError as e:
-                form.add_error('password1', e)
-                logger.warning(f"Password validation failed for new registration attempt")
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Registration successful!')
+            return redirect('profile')
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
     else:
-        form = UserCreationForm()
+        form = UserRegistrationForm()
     return render(request, 'users/register.html', {'form': form})
 
 @rate_limit('login', limit=5, period=300)
 @require_http_methods(["GET", "POST"])
-def login_view(request):
+def login_user_view(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            
-            # Set session expiry and last login
-            request.session.set_expiry(3600)  # 1 hour
-            request.session['last_login'] = str(timezone.now())
-            
-            logger.info(f"Successful login for user: {user.username}")
-            
             next_url = request.GET.get('next')
-            if next_url and is_safe_url(next_url, allowed_hosts=None):
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
                 return redirect(next_url)
             return redirect('profile')
         else:
-            logger.warning(f"Failed login attempt for username: {request.POST.get('username')}")
             messages.error(request, 'Invalid username or password')
     else:
         form = AuthenticationForm()
     return render(request, "users/login.html", {"form": form})
 
-@login_required
-@cache_page(60 * 15)  # Cache for 15 minutes
+@login_required  # Ensure only logged-in users can access the profile page
 def profile_view(request):
     try:
         user_data = {

@@ -75,8 +75,9 @@ def category_view(request, category_name):
 # Post list
 
 
-def posts_by_category(request, category):
-    posts = BlogPost.objects.filter(category=category)
+def posts_by_category(request, category_name):
+    # posts = BlogPost.objects.filter(category=category)
+    posts = BlogPost.objects.filter(category__name=category_name)
     published_after = request.GET.get('published_after')
     if published_after:
         published_after_date = datetime.strptime(published_after, '%Y-%m-%d')
@@ -85,7 +86,7 @@ def posts_by_category(request, category):
     if tags:
         tags_list = [tag.strip() for tag in tags.split(',')]
         posts = posts.filter(tags__in=tags_list)
-    return render(request, 'blog/posts_by_category.html', {'posts': posts, 'category': category})
+    return render(request, 'blog/posts_by_category.html', {'posts': posts, 'category': category_name})
 
 
 def posts_by_author(request, author_username):
@@ -144,11 +145,3 @@ def logout(request):
     return redirect('home')
 
 
-@login_required
-@cache_page(60 * 15)  # Cache for 15 minutes
-def profile_view(request):
-    user_data = {
-        'user': request.user,
-        'profile': getattr(request.user, 'profile', None)
-    }
-    return render(request, 'users/profile.html', user_data)
