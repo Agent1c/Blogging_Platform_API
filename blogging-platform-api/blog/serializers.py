@@ -17,7 +17,8 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogPost
-        fields = ['id', 'title', 'content', 'author', 'category', 'published_date', 'tags', 'created_date']
+        # fields = ['id', 'title', 'content', 'author', 'category', 'published_date', 'tags', 'created_date']
+        fields = ['id', 'title', 'content', 'author', 'created_at', 'published_date']  
         read_only_fields = ['published_date', 'created_date']
 
     def create(self, validated_data):

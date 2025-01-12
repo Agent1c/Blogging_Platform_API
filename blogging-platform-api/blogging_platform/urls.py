@@ -3,6 +3,8 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from blog.views import home, about
 
+# app_name = 'blog' 
+
 urlpatterns = [
        path('admin/', admin.site.urls),
        path('', home, name='home'),

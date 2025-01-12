@@ -1,28 +1,58 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
-from .models import BlogPost
-from django.contrib.auth import login as auth_login, logout as auth_logout
-from .forms import BlogPostForm, UserRegistrationForm
-from django.db.models import Q
 from datetime import datetime
-from .forms import UserProfileForm
 
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
+
+from .forms import BlogPostForm, UserProfileForm, UserRegistrationForm
+from .models import BlogPost
+
+
+class BlogListView(View):
+    def get(self, request):
+        posts = BlogPost.objects.all().order_by('-created_at')
+        return render(request, 'blog/post_list.html', {'posts': posts})
+
+def post_list(request):
+    posts = BlogPost.objects.all()
+    return render(request, 'blog/post_list.html', {'posts': posts})
+
+
+class BlogDetailView(View):
+    def get(self, request, pk):
+        post = get_object_or_404(BlogPost, pk=pk)
+        return render(request, 'blog/post_form.html', {'posts': post})
 
 
 @login_required(login_url='/users/login/')
+# def create_post(request):
+#     if request.method == 'POST':
+#         form = BlogPostForm(request.POST, user=request.user)
+#         if form.is_valid():
+#             post = form.save(commit=False)
+#             post.author = request.user
+#             post.save()
+#             form.save_m2m()  # Save the many-to-many data for the form
+#             return redirect('post_list')
+#     form = BlogPostForm(user=request.user)
+#     return render(request, 'blog/create_post.html', {'form': form})
+
 def create_post(request):
     if request.method == 'POST':
-        form = BlogPostForm(request.POST, user=request.user)
+        form = BlogPostForm(request.POST, user=request.user)  # Pass the user to the form
         if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            form.save_m2m()  # Save the many-to-many data for the form
-            return redirect('post_list')
+            post = form.save(commit=False)  # Create the post instance but don't save to the database yet
+            post.author = request.user  # Assign the current user as the author
+            post.save()  # Now save the post instance to the database
+            form.save_m2m()  # Save the many-to-many data for the form (if applicable)
+            return redirect('blog:post_list')  # Redirect to the post list view using the correct namespace
     else:
-        form = BlogPostForm(user=request.user)
-    return render(request, 'blog/create_post.html', {'form': form})
+        form = BlogPostForm(user=request.user)  # Create a new form instance for GET requests
+    return render(request, 'blog/create_post.html', {'form': form})  # Render the form in the template
+
 
 @login_required
 def update_post(request, pk):
@@ -34,9 +64,9 @@ def update_post(request, pk):
         if form.is_valid():
             form.save()
             return redirect('post_list')
-    else:
-        form = BlogPostForm(instance=post, user=request.user)
+    form = BlogPostForm(instance=post, user=request.user)
     return render(request, 'blog/update_post.html', {'form': form})
+
 
 @login_required
 def delete_post(request, pk):
@@ -48,14 +78,14 @@ def delete_post(request, pk):
         return redirect('post_list')
     return render(request, 'blog/delete_post.html', {'post': post})
 
+
 def category_view(request, category_name):
-       posts = BlogPost.objects.filter(category__name=category_name)
-       return render(request, 'blog/category.html', {'posts': posts})
+    posts = BlogPost.objects.filter(category__name=category_name)
+    return render(request, 'blog/category.html', {'posts': posts})
+
 
 # Post list
-def post_list(request):
-    posts = BlogPost.objects.all()
-    return render(request, 'blog/post_list.html', {'posts': posts})
+
 
 def posts_by_category(request, category):
     posts = BlogPost.objects.filter(category=category)
@@ -68,6 +98,7 @@ def posts_by_category(request, category):
         tags_list = [tag.strip() for tag in tags.split(',')]
         posts = posts.filter(tags__in=tags_list)
     return render(request, 'blog/posts_by_category.html', {'posts': posts, 'category': category})
+
 
 def posts_by_author(request, author_username):
     author = get_object_or_404(User, username=author_username)
@@ -110,20 +141,20 @@ def search_posts(request):
 def home(request):
     return render(request, 'home.html')
 
+
 def about(request):
     return render(request, 'about.html')
 
-# def user_login(request):
-#     return render(request, 'registration/login.html')
 
-def login(request):
+def login_view(request):
     return render(request, 'users/login.html')
+
 
 @login_required
 def logout(request):
     auth_logout(request)
-    return redirect('home') 
-    
+    return redirect('home')
+
 
 def register(request):
     if request.method == 'POST':
@@ -132,9 +163,9 @@ def register(request):
             user = form.save()
             auth_login(request, user)
             return redirect('post_list')
-    else:
-        form = UserRegistrationForm()
+    form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
+
 
 @login_required
 def user_profile(request):
@@ -143,6 +174,5 @@ def user_profile(request):
         if form.is_valid():
             form.save()
             return redirect('user_profile')
-    else:
-        form = UserProfileForm(instance=request.user)
+    form = UserProfileForm(instance=request.user)
     return render(request, 'registration/profile.html', {'form': form})
