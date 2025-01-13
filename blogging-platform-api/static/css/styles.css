@@ -36,7 +36,7 @@ footer {
     width: 100%;
 }
 
-.post{
+.post {
     margin: 1rem;
     padding: 1rem;
     border: 1px solid #ccc;
@@ -46,6 +46,6 @@ footer {
     color: red;
 }
 
-::content h1 {
+h1 {
     font-size: 2rem;
 }

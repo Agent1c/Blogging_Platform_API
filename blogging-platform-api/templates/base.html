@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Blogging Platform{% endblock %}</title>
-    {% load static %}
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Blogging Platform{% endblock %}</title>
+        {% load static %}
+        <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
@@ -21,7 +22,10 @@
         </nav>
     </header>
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}
+        <h1>Welcome to Freaky Coding Blog</h1>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae, distinctio.</p>
+        {% endblock %}
     </main>
     <footer>
         <p>&copy; 2025 Blogging Platform</p>

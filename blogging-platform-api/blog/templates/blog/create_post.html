@@ -1,5 +1,5 @@
-
 {% extends "base.html" %}
+
 {% block content %}
     <h1>Create New Post</h1>
     <form method="post" action="{% url 'blog:create_post' %}">
@@ -7,18 +7,19 @@
         {{ form.as_p }}
         <button type="submit">Save</button>
     </form>
+
     {% if form.errors %}
-        <div class="error">
+        <div class="error" aria-live="assertive">
             <p>Please correct the following errors:</p>
             <ul>
-            {% for field in form %}
-                {% for error in field.errors %}
-                    <li>{{ field.label }}: {{ error }}</li>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
             </ul>
         </div>
     {% endif %}
-
+    
     <a href="{% url 'blog:post_list' %}">Cancel</a>
 {% endblock %}

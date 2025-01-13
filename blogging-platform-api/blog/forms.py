@@ -1,13 +1,16 @@
 from django import forms
-from .models import BlogPost
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+
+from .models import BlogPost
 from .models import Comment
+
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name']
+
 
 class BlogPostForm(forms.ModelForm):
     class Meta:
@@ -22,6 +25,7 @@ class BlogPostForm(forms.ModelForm):
         super(BlogPostForm, self).__init__(*args, **kwargs)
         if self.user:
             self.fields['author'].initial = self.user
+
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -40,7 +44,8 @@ class UserRegistrationForm(UserCreationForm):
         username = self.cleaned_data.get('username')
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("A user with that username already exists.")
-        return 
+        return username
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
